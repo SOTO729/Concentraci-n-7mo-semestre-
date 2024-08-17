@@ -12,9 +12,3 @@ Después de cargar la información, deberás realizar la codificación de las si
 5. Una función que reciba la lista de palabras y regrese un diccionario donde las llaves son las letras del abecedario y cada elemento una lista de las palabras que comienzan con dicha letra. 
 6. Una función que reciba el texto en formato cadena y regrese el conteo de los signos de puntuación que se utilizaron. 
 """
-#nombre_archivo=input('Inserte nombre del archivo...')
-def obtener_palabras(nombre_archivo):
-    archivo=nombre_archivo+'.txt'
-    with open('Fragmento El Principito.txt','r',encoding='utf-8'):
-        print('done')
-obtener_palabras('a')
