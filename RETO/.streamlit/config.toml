@@ -1,0 +1,8 @@
+[client]
+showErrorDetails=false
+[theme]
+base = "dark"
+primaryColor = "#048b2e"
+secondaryBackgroundColor = "#1e272e"
+textColor = "#eeeeee"
+#font = "monospace"
