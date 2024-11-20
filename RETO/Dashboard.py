@@ -2,6 +2,7 @@ import streamlit as st
 import datetime
 from datetime import time
 import pandas as pd
+
 st.set_page_config(page_title='Análisis de datos',layout="wide")
 #st.title('Análisis de datos')
 tab1,tab2=st.tabs(['Análisis de las variables dinámicas en el tiempo','Análisis de líneas de la cara en el tiempo'])
