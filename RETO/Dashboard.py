@@ -2,6 +2,7 @@ import streamlit as st
 import datetime
 from datetime import time
 import pandas as pd
+from config import read_df
 
 st.set_page_config(page_title='Análisis de datos',layout="wide")
 #st.title('Análisis de datos')
