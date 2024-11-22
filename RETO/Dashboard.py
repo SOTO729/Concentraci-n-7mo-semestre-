@@ -2,32 +2,68 @@ import streamlit as st
 import datetime
 from datetime import time
 import pandas as pd
-from config import read_df
-
+import matplotlib.pyplot as plt
+plt.style.use('dark_background')
+def filter(minn,maxx):
+    from config import df1
+    from config import df2
+    from config import df3
+    from config import df4
+    df1= df1[(df1['Tiempo'] >= minn) & (df1['Tiempo'] <= maxx)]
+    df2 = df2[(df2['Tiempo'] >= minn) & (df2['Tiempo'] <= maxx)]
+    df3 = df3[(df3['Tiempo'] >= minn) & (df3['Tiempo'] <= maxx)]
+    df4 = df4[(df4['Tiempo'] >= minn) & (df4['Tiempo'] <= maxx)]
+    return df1,df2,df3,df4
 st.set_page_config(page_title='Análisis de datos',layout="wide")
 #st.title('Análisis de datos')
 tab1,tab2=st.tabs(['Análisis de las variables dinámicas en el tiempo','Análisis de líneas de la cara en el tiempo'])
 st.sidebar.title('Panel de control')
-files=st.sidebar.file_uploader('Carge un archivo por sesión en orden cronológico', type='csv', accept_multiple_files=True, label_visibility="visible")
-n_files=['Sesión '+str(i+1) for i in range(len(files))]
-SECTION=st.sidebar.selectbox(label='Seleccione una sesión:',options=n_files)
-try:
-    selected_file=n_files.index(SECTION)
-    data=pd.read_csv(files[selected_file])
-    data.dropna(inplace=True)
-    data['Tiempo']=data.index*3
-    data.dropna(inplace=True)
-    t_max=max(data['Tiempo'])
-    t_min=min(data['Tiempo'])
-    t_min=datetime.timedelta(seconds=t_min)
-    t_max=datetime.timedelta(seconds=t_max)
-    t_min=t_min.total_seconds() / 60
-    t_max=t_max.total_seconds() / 60
-    SLIDER = st.sidebar.slider("Seleccione un rango de tiempo:", value=(t_min,t_max))
-    st.sidebar.write("Rango seleccionado:", str(round(SLIDER[1]-SLIDER[0],2))+' '+'min')
-except:
-    pass
+df1,df2,df3,df4=filter(0,1e70)
+lista=[df1,df2,df3,df4]
+maxim=[]
+for df in lista:
+    maxim.append(max(df['Tiempo']))
+SLIDER = st.sidebar.slider("Seleccione un rango de tiempo:", value=(0.0,min(maxim)))
+st.sidebar.write("Tiempo seleccionado:", str(round(SLIDER[1]-SLIDER[0],2))+' '+'min')
+df1,df2,df3,df4=filter(float(SLIDER[0]),float(SLIDER[1]))
 with tab1:
-    st.bar_chart([3,5,6,7,1,8,2,7],color='#2dad9d')
+    import matplotlib.pyplot as plt
+    sesiones = [df1, df2, df3, df4]
+    sentiment_columns = ['01_C', '02_A', '03_D', '04_M']
+    #creo la figura con 4 subplots en una columna
+    fig, axs = plt.subplots(nrows=4, ncols=1,figsize=(10, 18))
+    #itero sobre cada sesión y su subplot
+    for s, ax in enumerate(axs):
+        #sesión actual
+        session_data = sesiones[s]
+        #grafico cada columna de sentimiento en el subplot correspondiente
+        for i, col in enumerate(sentiment_columns):
+            #filtro los intervalos de tiempo donde el sentimiento está presente (valor = 1)
+            intervalos = []
+            start = None
+            for j in range(len(session_data)):
+                if session_data[col].iloc[j] == 1:
+                    if start is None:
+                        start = session_data['Tiempo'].iloc[j]
+                else:
+                    if start is not None:
+                        end = session_data['Tiempo'].iloc[j - 1]
+                        intervalos.append((start, end))
+                        start = None
+            # Capturar el último intervalo si termina en el último valor de la columna
+            if start is not None:
+                intervalos.append((start, session_data['Tiempo'].iloc[-1]))
+
+            # Dibujar barras horizontales para los intervalos
+            for (start, end) in intervalos:
+                ax.hlines(y=i, xmin=start, xmax=end, color=plt.get_cmap("Set1")(i), linewidth=6)
+
+        # Etiquetas y formato
+        ax.set_yticks(range(len(sentiment_columns)))
+        ax.set_yticklabels(sentiment_columns)
+        ax.set_xlabel("Tiempo")
+        ax.set_title(f"Presencia de sentimientos en intervalos de tiempo - Sesión {s + 1}")
+        ax.grid(axis='x', linestyle='--', alpha=0.7)
+    st.pyplot(fig)
 with tab2:
     st.line_chart([3,5,6,7,1,8,2,7],color='#2dad9d')
