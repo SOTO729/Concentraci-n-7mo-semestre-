@@ -1,11 +1,11 @@
 #@st.cache_data
-def load_df(arg):
+def load_df(arg,ventana):
     import pandas as pd
     import datetime
     import math
     data=pd.read_csv(arg)
     data.dropna(inplace=True)
-    data['Tiempo']=data.index*3
+    data['Tiempo']=data.index*ventana
     data.dropna(inplace=True)
     data['Tiempo']=data['Tiempo'].apply(lambda x: datetime.timedelta(seconds=x).total_seconds() / 60)
     def distance(x, y, z):
@@ -21,8 +21,8 @@ df1='11abr.csv'
 df2='22abr.csv'
 df3='29abr.csv'
 df4='03may.csv'
-
-df1=load_df(df1)
-df2=load_df(df2)
-df3=load_df(df3)
-df4=load_df(df4)
+ventana=3
+df1=load_df(df1,ventana)
+df2=load_df(df2,ventana)
+df3=load_df(df3,ventana)
+df4=load_df(df4,ventana)
