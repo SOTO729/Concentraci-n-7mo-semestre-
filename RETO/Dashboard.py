@@ -16,8 +16,9 @@ def filter(minn,maxx):
     return df1,df2,df3,df4
 st.set_page_config(page_title='Análisis de datos',layout="wide")
 #st.title('Análisis de datos')
-tab1,tab2=st.tabs(['Análisis de las variables dinámicas en el tiempo','Análisis de líneas de la cara en el tiempo'])
-st.sidebar.title('Panel de control')
+tab1,tab2=st.tabs(['Análisis de variables en el tiempo','Análisis comparativo'])
+#st.sidebar.title('Panel de control')
+st.sidebar.empty()
 df1,df2,df3,df4=filter(0,1e70)
 lista=[df1,df2,df3,df4]
 maxim=[]
@@ -27,6 +28,9 @@ SLIDER = st.sidebar.slider("Seleccione un rango de tiempo:", value=(0.0,min(maxi
 st.sidebar.write("Tiempo seleccionado:", str(round(SLIDER[1]-SLIDER[0],2))+' '+'min')
 df1,df2,df3,df4=filter(float(SLIDER[0]),float(SLIDER[1]))
 with tab1:
+    SECTION=st.sidebar.selectbox(label='Grafique en función del tiempo:',options=['Distancia','Velocidad','Aceleración','Presión','Velocidad de la presión','Aceleración de la presión'])
+    MULTI_SECTION1=st.sidebar.multiselect(label='Radar variables dinámicas:',options=['Sesión 1','Sesión 2','Sesión 3','Sesión 4'])
+    MULTI_SECTION2=st.sidebar.multiselect(label='Radar líneas de la cara:',options=['Sesión 1','Sesión 2','Sesión 3','Sesión 4'])
     import matplotlib.pyplot as plt
     sesiones = [df1, df2, df3, df4]
     sentiment_columns = ['01_C', '02_A', '03_D', '04_M']
@@ -66,4 +70,4 @@ with tab1:
         ax.grid(axis='x', linestyle='--', alpha=0.7)
     st.pyplot(fig)
 with tab2:
-    st.line_chart([3,5,6,7,1,8,2,7],color='#2dad9d')
+    st.sidebar.empty()
