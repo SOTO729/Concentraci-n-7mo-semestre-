@@ -73,42 +73,5 @@ with tab1:
     plt.tight_layout()
     st.pyplot(fig)
 
-#    sesiones = [df1, df2, df3, df4]
-#    sentiment_columns = ['01_C', '02_A', '03_D', '04_M']
-    #creo la figura con 4 subplots en una columna
-#    fig, axs = plt.subplots(nrows=4, ncols=1,figsize=(10, 18))
-    #itero sobre cada sesión y su subplot
-#    for s, ax in enumerate(axs):
-        #sesión actual
-#        session_data = sesiones[s]
-        #grafico cada columna de sentimiento en el subplot correspondiente
-#        for i, col in enumerate(sentiment_columns):
-            #filtro los intervalos de tiempo donde el sentimiento está presente (valor = 1)
-#            intervalos = []
-#            start = None
-#            for j in range(len(session_data)):
-#                if session_data[col].iloc[j] == 1:
-#                    if start is None:
-#                        start = session_data['Tiempo'].iloc[j]
-#                else:
-#                    if start is not None:
-#                        end = session_data['Tiempo'].iloc[j - 1]
-#                        intervalos.append((start, end))
-#                        start = None
-            # Capturar el último intervalo si termina en el último valor de la columna
-#            if start is not None:
-#                intervalos.append((start, session_data['Tiempo'].iloc[-1]))
-
-            # Dibujar barras horizontales para los intervalos
-#            for (start, end) in intervalos:
-#                ax.hlines(y=i, xmin=start, xmax=end, color=plt.get_cmap("Set1")(i), linewidth=6)
-
-        # Etiquetas y formato
-#        ax.set_yticks(range(len(sentiment_columns)))
-#        ax.set_yticklabels(sentiment_columns)
-#        ax.set_xlabel("Tiempo")
-#        ax.set_title(f"Presencia de sentimientos en intervalos de tiempo - Sesión {s + 1}")
-#        ax.grid(axis='x', linestyle='--', alpha=0.7)
-#    st.pyplot(fig)
 with tab2:
     st.sidebar.empty()
