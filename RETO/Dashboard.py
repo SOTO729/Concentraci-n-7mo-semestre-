@@ -8,11 +8,28 @@ from sklearn.preprocessing import StandardScaler
 import seaborn as sns
 plt.style.use('dark_background')
 #@st.cache
+PATIENT=st.sidebar.selectbox(label='Eliga un paciente:',options=['Paciente 1','Paciente 2','Paciente 3'])
+def times(data):
+    data['Tiempo']=data.index*ventana
+    data.dropna(inplace=True)
+    data['Tiempo']=data['Tiempo'].apply(lambda x: datetime.timedelta(seconds=x).total_seconds() / 60)
+
 def filter(minn,maxx):
-    from config import df1
-    from config import df2
-    from config import df3
-    from config import df4
+    if 'Paciente 1' in PATIENT:
+        from config import df1p1
+        from config import df2p1
+        from config import df3p1
+        from config import df4p1
+    elif 'Paciente 2' in PATIENT:
+        from config import df1p2
+        from config import df2p2
+        from config import df3p2
+        from config import df4p2
+    elif 'Paciente 3' in PATIENT:
+        from config import df1p3
+        from config import df2p3
+        from config import df3p3
+        from config import df4p3
     df1= df1[(df1['Tiempo'] >= minn) & (df1['Tiempo'] <= maxx)]
     df2 = df2[(df2['Tiempo'] >= minn) & (df2['Tiempo'] <= maxx)]
     df3 = df3[(df3['Tiempo'] >= minn) & (df3['Tiempo'] <= maxx)]

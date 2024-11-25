@@ -1,13 +1,12 @@
+import streamlit as st
 #@st.cache_data
-def load_df(arg,ventana):
+import os
+def load_df(arg):
     import pandas as pd
     import datetime
     import math
     data=pd.read_csv(arg)
     data.dropna(inplace=True)
-    data['Tiempo']=data.index*ventana
-    data.dropna(inplace=True)
-    data['Tiempo']=data['Tiempo'].apply(lambda x: datetime.timedelta(seconds=x).total_seconds() / 60)
     def distance(x, y, z):
         return math.sqrt(x**2 + y**2 + z**2)
     data['Distancia'] = data.apply(lambda row: distance(row['Des_x'], row['Des_y'], row['Des_z']), axis=1)
@@ -17,13 +16,31 @@ def load_df(arg,ventana):
     data['04_M']= data['04_M'].replace({-1:0})
     return data
 
-df1_name='/Paciente1/11abr.csv'
-df2_name='/Paciente1/22abr.csv'
-df3_name='/Paciente1/29abr.csv'
-df4_name='/Paciente1/03may.csv'
-ventana=3
+folder_paths = ['./Paciente 1','./Paciente 2','./Paciente 3']
+pacientes=[]
+def read_patient(folder_path):
+    paciente=[]
+    files = os.listdir(folder_path)
+    for file_name in files[:4]:  # Limitar a los primeros 4 archivos
+        file_path = os.path.join(folder_path, file_name)
+        with open(file_path, 'r') as file:
+            content = file.read()
+            paciente.append(content)
+    return paciente
 
-df1=load_df(df1_name,ventana)
-df2=load_df(df2_name,ventana)
-df3=load_df(df3_name,ventana)
-df4=load_df(df4_name,ventana)
+for i in folder_paths:
+    pacientes.append(read_patient(i))
+df1p1=load_df(pacientes[0][0])
+df2p1=load_df(pacientes[0][1])
+df3p1=load_df(pacientes[0][2])
+df4p1=load_df(pacientes[0][3])
+
+df1p2=load_df(pacientes[1][0])
+df2p2=load_df(pacientes[1][1])
+df3p2=load_df(pacientes[1][2])
+df4p2=load_df(pacientes[1][3])
+
+df1p3=load_df(pacientes[2][0])
+df2p3=load_df(pacientes[2][1])
+df3p3=load_df(pacientes[2][2])
+df4p3=load_df(pacientes[2][3])
