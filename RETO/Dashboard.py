@@ -1,5 +1,6 @@
 import streamlit as st
 import datetime
+import numpy as np
 from datetime import time
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -38,7 +39,7 @@ with tab1:
     import matplotlib.pyplot as plt
     # Asumiendo que df1, df2, df3 y df4 son DataFrames ya definidos
     sesiones = [df1, df2, df3, df4]
-    list_sesiones,intervalos_main=[],[]
+    list_sesiones,intervalos_main,emoc=[],[],[]
     sentiment_columns = ['01_C', '02_A', '03_D', '04_M']
     # Creo la figura con 4 subplots en 2 filas y 2 columnas
     fig, axs = plt.subplots(nrows=2, ncols=2, figsize=(15, 10))
@@ -61,12 +62,14 @@ with tab1:
                         intervalos.append((start, end))
                         list_sesiones.append(s+1)
                         intervalos_main.append((start, end))
+                        emoc.append(col)
                         start = None
             # Capturar el último intervalo si termina en el último valor de la columna
             if start is not None:
                 intervalos.append((start, session_data['Tiempo'].iloc[-1]))
                 list_sesiones.append(s+1)
                 intervalos_main.append((start, session_data['Tiempo'].iloc[-1]))
+                emoc.append(col)
 
             # Dibujar barras horizontales para los intervalos
             for (start, end) in intervalos:
@@ -85,6 +88,13 @@ with tab1:
         etiquetas.append(list_sesiones[con])
         con+=1
     data_mini=pd.DataFrame()
+    data_mini['sesion']=etiquetas
+    data_mini['valor']=maximos
+    data_mini['emocion']=emoc
+    data_mini['emocion']= data_mini['emocion'].replace({'01_C':'Cansancio'})
+    data_mini['emocion']= data_mini['emocion'].replace({'02_A':'Ansiedad'})
+    data_mini['emocion']= data_mini['emocion'].replace({'03_D':'Dolor'})
+    data_mini['emocion']= data_mini['emocion'].replace({'04_M':'Motivación'})
         
     plt.tight_layout()
     with col1: 
@@ -120,8 +130,64 @@ with tab1:
         plt.ylabel(f'{var}')
         plt.title(f'{var} acumulada en el tiempo')
         plt.legend(loc='upper left')
-       # plt.tight_layout()
+        plt.tight_layout()
         st.pyplot(fig2)
+        import matplotlib.pyplot as plt
 
+        # Datos para cada sección
+        s1c=data_mini[(data_mini['emocion']=='Cansancio') & (data_mini['sesion']==1)]
+        s1a=data_mini[(data_mini['emocion']=='Ansiedad') & (data_mini['sesion']==1)]
+        s1d=data_mini[(data_mini['emocion']=='Dolor') & (data_mini['sesion']==1)]
+        s1m=data_mini[(data_mini['emocion']=='Motivación') & (data_mini['sesion']==1)]
+        seccion1 = [np.where(np.isnan(s1c['valor'].max()),0,s1c['valor'].max()), np.where(np.isnan(s1a['valor'].max()),0,s1a['valor'].max()), np.where(np.isnan(s1d['valor'].max()),0,s1d['valor'].max()),np.where(np.isnan(s1m['valor'].max()),0,s1m['valor'].max())]
+        
+        s1c=data_mini[(data_mini['emocion']=='Cansancio') & (data_mini['sesion']==2)]
+        s1a=data_mini[(data_mini['emocion']=='Ansiedad') & (data_mini['sesion']==2)]
+        s1d=data_mini[(data_mini['emocion']=='Dolor') & (data_mini['sesion']==2)]
+        s1m=data_mini[(data_mini['emocion']=='Motivación') & (data_mini['sesion']==2)]
+        seccion2 = [np.where(np.isnan(s1c['valor'].max()),0,s1c['valor'].max()), np.where(np.isnan(s1a['valor'].max()),0,s1a['valor'].max()), np.where(np.isnan(s1d['valor'].max()),0,s1d['valor'].max()),np.where(np.isnan(s1m['valor'].max()),0,s1m['valor'].max())]
+
+        s1c=data_mini[(data_mini['emocion']=='Cansancio') & (data_mini['sesion']==3)]
+        s1a=data_mini[(data_mini['emocion']=='Ansiedad') & (data_mini['sesion']==3)]
+        s1d=data_mini[(data_mini['emocion']=='Dolor') & (data_mini['sesion']==3)]
+        s1m=data_mini[(data_mini['emocion']=='Motivación') & (data_mini['sesion']==3)]
+        seccion3 = [np.where(np.isnan(s1c['valor'].max()),0,s1c['valor'].max()), np.where(np.isnan(s1a['valor'].max()),0,s1a['valor'].max()), np.where(np.isnan(s1d['valor'].max()),0,s1d['valor'].max()),np.where(np.isnan(s1m['valor'].max()),0,s1m['valor'].max())]
+
+        s1c=data_mini[(data_mini['emocion']=='Cansancio') & (data_mini['sesion']==4)]
+        s1a=data_mini[(data_mini['emocion']=='Ansiedad') & (data_mini['sesion']==4)]
+        s1d=data_mini[(data_mini['emocion']=='Dolor') & (data_mini['sesion']==4)]
+        s1m=data_mini[(data_mini['emocion']=='Motivación') & (data_mini['sesion']==4)]
+        seccion4 = [np.where(np.isnan(s1c['valor'].max()),0,s1c['valor'].max()), np.where(np.isnan(s1a['valor'].max()),0,s1a['valor'].max()), np.where(np.isnan(s1d['valor'].max()),0,s1d['valor'].max()),np.where(np.isnan(s1m['valor'].max()),0,s1m['valor'].max())]
+        print(s1c)
+
+        # Etiquetas para el eje x
+        labels = ['Cansancio', 'Ansiedad', 'Dolor', 'Motivación']
+
+        # Crear subplots
+        fig3, axs3 = plt.subplots(2, 2, figsize=(10, 8))
+
+        # Gráfico para la sección 1
+        axs3[0, 0].bar(labels, seccion1, color='green')
+        axs3[0, 0].set_title('Tiempo máximo en una emoción Sesión 1')
+        axs3[0, 0].set_ylabel('Tiempo')
+
+        # Gráfico para la sección 2
+        axs3[0, 1].bar(labels, seccion2, color='lightblue')
+        axs3[0, 1].set_title('Tiempo máximo en una emoción Sesión 2')
+        axs3[0, 1].set_ylabel('Tiempo')
+
+        # Gráfico para la sección 3
+        axs3[1, 0].bar(labels, seccion3, color='blue')
+        axs3[1, 0].set_title('Tiempo máximo en una emoción Sesión 3')
+        axs3[1, 0].set_ylabel('Tiempo')
+
+        # Gráfico para la sección 4
+        axs3[1, 1].bar(labels, seccion4, color='purple')
+        axs3[1, 1].set_title('Tiempo máximo en una emoción Sesión 4')
+        axs3[1, 1].set_ylabel('Tiempo')
+
+        # Ajustar el diseño
+        plt.tight_layout()
+        st.pyplot(fig3)
 with tab2:
     st.sidebar.empty()
