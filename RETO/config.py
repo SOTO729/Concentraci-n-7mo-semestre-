@@ -17,7 +17,7 @@ def load_df(arg):
     return data
 
 folder_paths = ['./Paciente 1','./Paciente 2','./Paciente 3']
-pacientes=[]
+
 def read_patient(folder_path):
     paciente=[]
     files = os.listdir(folder_path)
@@ -27,8 +27,9 @@ def read_patient(folder_path):
             content = file.read()
             paciente.append(content)
     return paciente
-
+pacientes=[]
 for i in folder_paths:
+    print(type(read_patient(i)),len(pacientes))
     pacientes.append(read_patient(i))
 df1p1=load_df(pacientes[0][0])
 df2p1=load_df(pacientes[0][1])
@@ -44,4 +45,4 @@ df1p3=load_df(pacientes[2][0])
 df2p3=load_df(pacientes[2][1])
 df3p3=load_df(pacientes[2][2])
 df4p3=load_df(pacientes[2][3])
-print(len(pacientes))
+print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',len(pacientes))
