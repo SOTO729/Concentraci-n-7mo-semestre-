@@ -4,6 +4,8 @@ import numpy as np
 from datetime import time
 import pandas as pd
 import matplotlib.pyplot as plt
+from sklearn.preprocessing import StandardScaler
+import seaborn as sns
 plt.style.use('dark_background')
 def filter(minn,maxx):
     from config import df1
@@ -99,6 +101,100 @@ with tab1:
     plt.tight_layout()
     with col1: 
         st.pyplot(fig)
+        # Función para calcular cruces por cero
+        def calculate_zero_crossings(df):
+            numeric_cols = df.select_dtypes(include=['number']).columns
+            scaler = StandardScaler()
+            df_normalized = pd.DataFrame(scaler.fit_transform(df[numeric_cols]), columns=numeric_cols)
+            zero_crossings = {
+                col: ((df_normalized[col].shift(1) * df_normalized[col]) < 0).sum()
+                for col in df_normalized.columns
+            }
+            return pd.DataFrame(list(zero_crossings.items()), columns=['Column', 'Zero_Crossings'])
+
+        # Crear un radar chart para múltiples sesiones
+        def create_combined_radar_chart(radar_data, labels, title):
+            fig, ax = plt.subplots(figsize=(6, 6), subplot_kw=dict(polar=True))
+
+            # Construir ángulos para las variables (mismas para todos los DataFrames)
+            categories = radar_data[0]['Column']
+            num_vars = len(categories)
+            angles = np.linspace(0, 2 * np.pi, num_vars, endpoint=False).tolist()
+            angles += angles[:1]  # Cerrar el radar
+
+            # Dibujar cada serie de datos en el radar
+            for session_data, label in zip(radar_data, labels):
+                values = session_data['Zero_Crossings'].tolist()
+                values += values[:1]  # Cerrar el gráfico
+                ax.plot(angles, values, linewidth=2, linestyle='solid', label=label)
+                ax.fill(angles, values, alpha=0.25)
+
+            ax.set_xticks(angles[:-1])
+            ax.set_xticklabels(categories, fontsize=10)
+            ax.set_ylim(0, max(max(df['Zero_Crossings']) for df in radar_data))
+            ax.set_title(title, size=15, color='white', pad=20)
+            ax.legend(loc='upper right', bbox_to_anchor=(1.3, 1.1))
+            return fig
+
+        # Simular DataFrames df1, df2, df3, df4
+        dff1=df1.drop(columns=['F5EEX','F6EES','F8EIX','F7EIS','F9EEX','F10ES','F11EX','F12ES','F13EV','F14EV','F17MS','F18MX','F15MS','F16MX','F19MH','F20MH','F1EBX','F2EBS','F4EBX','F3EBS','01_C','02_A','03_D','04_M','Tiempo'])
+        dff2=df2.drop(columns=['F5EEX','F6EES','F8EIX','F7EIS','F9EEX','F10ES','F11EX','F12ES','F13EV','F14EV','F17MS','F18MX','F15MS','F16MX','F19MH','F20MH','F1EBX','F2EBS','F4EBX','F3EBS','01_C','02_A','03_D','04_M','Tiempo'])
+        dff3=df3.drop(columns=['F5EEX','F6EES','F8EIX','F7EIS','F9EEX','F10ES','F11EX','F12ES','F13EV','F14EV','F17MS','F18MX','F15MS','F16MX','F19MH','F20MH','F1EBX','F2EBS','F4EBX','F3EBS','01_C','02_A','03_D','04_M','Tiempo'])
+        dff4=df4.drop(columns=['F5EEX','F6EES','F8EIX','F7EIS','F9EEX','F10ES','F11EX','F12ES','F13EV','F14EV','F17MS','F18MX','F15MS','F16MX','F19MH','F20MH','F1EBX','F2EBS','F4EBX','F3EBS','01_C','02_A','03_D','04_M','Tiempo'])
+
+        
+        lista2=[dff1,dff2,dff3,dff4]
+        # Calcular cruces por cero para cada sesión
+        radar_data = [calculate_zero_crossings(df) for df in lista2]
+        combined_radar_chart1 = create_combined_radar_chart(
+            radar_data, 
+            labels=["Sesión 1", "Sesión 2", "Sesión 3", "Sesión 4"],
+            title="Cruces por Cero - Variables dinámicas"
+        )
+        # Simular DataFrames df1, df2, df3, df4
+        dff1=df1.drop(columns=['Veloc','Acele','Des_x','Des_y','Des_z','Presn','VelPr','AcePr','01_C','02_A','03_D','04_M','Tiempo','Distancia'])
+        dff2=df2.drop(columns=['Veloc','Acele','Des_x','Des_y','Des_z','Presn','VelPr','AcePr','01_C','02_A','03_D','04_M','Tiempo','Distancia'])
+        dff3=df3.drop(columns=['Veloc','Acele','Des_x','Des_y','Des_z','Presn','VelPr','AcePr','01_C','02_A','03_D','04_M','Tiempo','Distancia'])
+        dff4=df4.drop(columns=['Veloc','Acele','Des_x','Des_y','Des_z','Presn','VelPr','AcePr','01_C','02_A','03_D','04_M','Tiempo','Distancia'])
+
+        
+        lista2=[dff1,dff2,dff3,dff4]
+        # Calcular cruces por cero para cada sesión
+        radar_data = [calculate_zero_crossings(df) for df in lista2]
+        combined_radar_chart2 = create_combined_radar_chart(
+            radar_data, 
+            labels=["Sesión 1", "Sesión 2", "Sesión 3", "Sesión 4"],
+            title="Cruces por Cero - Líneas de la cara"
+        )
+        col3, col4 = st.columns(2)
+        # Crear un mapa de calor para cada sesión
+        def create_heatmap(df,df2, session_label1,session_label2):
+            fig, axs = plt.subplots(1, 2, figsize=(15, 6))
+            numeric_cols = df.select_dtypes(include=['number']).columns
+            correlation_matrix = df[numeric_cols].corr()
+            numeric_cols = df2.select_dtypes(include=['number']).columns
+            correlation_matrix2 = df2[numeric_cols].corr()
+
+            # Mapa de calor para el primer DataFrame 
+            sns.heatmap(correlation_matrix, ax=axs[0], cmap='viridis', cbar=False) 
+            axs[0].set_title(session_label1) 
+            # Mapa de calor para el segundo DataFrame 
+            sns.heatmap(correlation_matrix2, ax=axs[1], cmap='viridis', cbar=True) 
+            axs[1].set_title(session_label2)
+            return fig
+
+        # Crear los gráficos
+        heatmap1 = create_heatmap(df1,df2, "Sesión 1",'Sesión 2')
+        heatmap2 = create_heatmap(df3,df4 ,"Sesión 3",'Sesión 4')
+        
+        with col3:
+            st.pyplot(combined_radar_chart1)
+            st.pyplot(heatmap1)
+
+        with col4:
+            st.pyplot(combined_radar_chart2)
+            st.pyplot(heatmap2)
+
     with col2:
         if 'Distancia' in SECTION:
             var='Distancia'
@@ -190,4 +286,85 @@ with tab1:
         plt.tight_layout()
         st.pyplot(fig3)
 with tab2:
-    st.sidebar.empty()
+    def pir(dfg):
+        # Filtros para derecho e izquierdo
+        derecho = dfg[['F1EBX', 'F4EBX', 'F5EEX', 'F8EIX', 'F14EV', 'F9EEX', 'F11EX', 'F15MS', 'F19MH', 'F17MS']]
+        izquierdo = dfg[['F2EBS', 'F3EBS', 'F6EES', 'F7EIS', 'F13EV', 'F12ES', 'F10ES', 'F16MX', 'F20MH', 'F18MX']]
+
+        # Estandarización de las columnas numéricas
+        scaler = StandardScaler()
+        derecho_normalized = pd.DataFrame(scaler.fit_transform(derecho), columns=derecho.columns)
+        izquierdo_normalized = pd.DataFrame(scaler.fit_transform(izquierdo), columns=izquierdo.columns)
+
+        # Contar cruces por cero para cada columna
+        cross_zero_counts_derecho = [
+            ((derecho_normalized[col].shift(1) * derecho_normalized[col]) < 0).sum()
+            for col in derecho_normalized.columns
+        ]
+
+        cross_zero_counts_izquierdo = [
+            ((izquierdo_normalized[col].shift(1) * izquierdo_normalized[col]) < 0).sum()
+            for col in izquierdo_normalized.columns
+        ]
+
+        # Crear un DataFrame con los valores de los cruces por cero
+        df_paired = pd.DataFrame({
+            'Columnas_Derecho': derecho.columns,
+            'Columnas_Izquierdo': izquierdo.columns,
+            'Derecho': cross_zero_counts_derecho,
+            'Izquierdo': cross_zero_counts_izquierdo
+        })
+
+        # Agregar una fila para las sumatorias totales utilizando pd.concat()
+        sumatoria_derecho = sum(df_paired['Derecho'])
+        sumatoria_izquierdo = sum(df_paired['Izquierdo'])
+        df_sumatoria = pd.DataFrame({
+            'Columnas_Derecho': ['Sumatoria Total'],
+            'Columnas_Izquierdo': ['Sumatoria Total'],
+            'Derecho': [sumatoria_derecho],
+            'Izquierdo': [sumatoria_izquierdo]
+        })
+        df_paired = pd.concat([df_paired], ignore_index=True)
+
+        # Crear la gráfica de pirámide
+        fig, ax = plt.subplots(figsize=(19, 17))
+
+        # Posiciones en el eje y (una posición por cada par de columnas más la fila de sumatorias)
+        y_positions = range(len(df_paired))
+
+        # Dibujar las barras horizontales para cada par de columnas y la sumatoria
+        ax.barh(y_positions, df_paired['Derecho'], color='purple', label='Derecho', align='center')
+        ax.barh(y_positions, -df_paired['Izquierdo'], color='green', label='Izquierdo', align='center')  # Negativo para enfrentar
+
+        # Configuración del eje y con etiquetas a ambos lados
+        ax.set_yticks(y_positions)
+        ax.set_yticklabels([''] * len(df_paired))  # Ocultamos temporalmente las etiquetas centrales
+        ax.invert_yaxis()  # Para que las barras más grandes queden en la parte superior
+
+        # Etiquetas a la izquierda y derecha de las barras
+        for i, (col_derecho, col_izquierdo) in enumerate(zip(df_paired['Columnas_Derecho'], df_paired['Columnas_Izquierdo'])):
+            ax.text(-max(df_paired['Izquierdo']) * 1.1, i, col_izquierdo, ha='right', va='center', fontsize=10, color='black')  # Etiquetas de izquierdo
+            ax.text(max(df_paired['Derecho']) * 1.1, i, col_derecho, ha='left', va='center', fontsize=10, color='black')  # Etiquetas de derecho
+
+        # Configuración de etiquetas y leyenda
+        ax.set_xlabel('Zero Crossings')
+        ax.set_title('Comparación de Cruces por Cero: Derecho vs Izquierdo')
+        ax.legend(loc='upper right')
+
+        # Línea central para separar los lados
+        ax.axvline(0, color='black', linewidth=0.8)
+
+        # Ajustar diseño y mostrar la gráfica
+        #plt.tight_layout()
+        return fig
+    col9,col10=st.columns(2)
+    with col9:
+        col11,col12=st.columns(2)
+        with col11:
+            st.pyplot(pir(df1))
+            st.pyplot(pir(df3))
+        with col12:
+            st.pyplot(pir(df2))
+            st.pyplot(pir(df4))
+    with col10:
+        st.sidebar.empty()
