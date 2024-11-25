@@ -17,12 +17,13 @@ def load_df(arg,ventana):
     data['04_M']= data['04_M'].replace({-1:0})
     return data
 
-df1='11abr.csv'
-df2='22abr.csv'
-df3='29abr.csv'
-df4='03may.csv'
+df1_name='/Paciente1/11abr.csv'
+df2_name='/Paciente1/22abr.csv'
+df3_name='/Paciente1/29abr.csv'
+df4_name='/Paciente1/03may.csv'
 ventana=3
-df1=load_df(df1,ventana)
-df2=load_df(df2,ventana)
-df3=load_df(df3,ventana)
-df4=load_df(df4,ventana)
+
+df1=load_df(df1_name,ventana)
+df2=load_df(df2_name,ventana)
+df3=load_df(df3_name,ventana)
+df4=load_df(df4_name,ventana)

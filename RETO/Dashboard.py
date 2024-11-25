@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
 import seaborn as sns
 plt.style.use('dark_background')
+#@st.cache
 def filter(minn,maxx):
     from config import df1
     from config import df2
@@ -37,7 +38,7 @@ with tab1:
 
     SECTION=st.sidebar.selectbox(label='Grafique en función del tiempo:',options=['Distancia','Velocidad','Aceleración','Presión','Velocidad de la presión','Aceleración de la presión'])
     MULTI_SECTION1=st.sidebar.multiselect(label='Radar variables dinámicas:',options=['Sesión 1','Sesión 2','Sesión 3','Sesión 4'])
-    MULTI_SECTION2=st.sidebar.multiselect(label='Radar líneas de la cara:',options=['Sesión 1','Sesión 2','Sesión 3','Sesión 4'])
+    #MULTI_SECTION2=st.sidebar.multiselect(label='Radar líneas de la cara:',options=['Sesión 1','Sesión 2','Sesión 3','Sesión 4'])
     import matplotlib.pyplot as plt
     # Asumiendo que df1, df2, df3 y df4 son DataFrames ya definidos
     sesiones = [df1, df2, df3, df4]
@@ -98,7 +99,7 @@ with tab1:
     data_mini['emocion']= data_mini['emocion'].replace({'03_D':'Dolor'})
     data_mini['emocion']= data_mini['emocion'].replace({'04_M':'Motivación'})
         
-    plt.tight_layout()
+    #plt.tight_layout()
     with col1: 
         st.pyplot(fig)
         # Función para calcular cruces por cero
@@ -343,8 +344,8 @@ with tab2:
 
         # Etiquetas a la izquierda y derecha de las barras
         for i, (col_derecho, col_izquierdo) in enumerate(zip(df_paired['Columnas_Derecho'], df_paired['Columnas_Izquierdo'])):
-            ax.text(-max(df_paired['Izquierdo']) * 1.1, i, col_izquierdo, ha='right', va='center', fontsize=10, color='black')  # Etiquetas de izquierdo
-            ax.text(max(df_paired['Derecho']) * 1.1, i, col_derecho, ha='left', va='center', fontsize=10, color='black')  # Etiquetas de derecho
+            ax.text(-max(df_paired['Izquierdo']) * 1.1, i, col_izquierdo, ha='right', va='center', fontsize=10, color='white')  # Etiquetas de izquierdo
+            ax.text(max(df_paired['Derecho']) * 1.1, i, col_derecho, ha='left', va='center', fontsize=10, color='white')  # Etiquetas de derecho
 
         # Configuración de etiquetas y leyenda
         ax.set_xlabel('Zero Crossings')
@@ -355,7 +356,7 @@ with tab2:
         ax.axvline(0, color='black', linewidth=0.8)
 
         # Ajustar diseño y mostrar la gráfica
-        #plt.tight_layout()
+        plt.tight_layout()
         return fig
     col9,col10=st.columns(2)
     with col9:
