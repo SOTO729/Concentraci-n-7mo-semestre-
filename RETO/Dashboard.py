@@ -35,7 +35,7 @@ def filter(minn,maxx):
     df3 = df3[(df3['Tiempo'] >= minn) & (df3['Tiempo'] <= maxx)]
     df4 = df4[(df4['Tiempo'] >= minn) & (df4['Tiempo'] <= maxx)]
     return df1,df2,df3,df4
-st.set_page_config(page_title='Análisis de datos',layout="wide")
+#st.set_page_config(page_title='Análisis de datos',layout="wide")
 #st.title('Análisis de datos')
 tab1,tab2=st.tabs(['Análisis de variables en el tiempo','Análisis comparativo'])
 #st.sidebar.title('Panel de control')
