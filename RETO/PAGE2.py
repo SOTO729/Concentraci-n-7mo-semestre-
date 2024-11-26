@@ -9,6 +9,7 @@ import seaborn as sns
 plt.style.use('dark_background')
 #@st.cache
 PATIENT=st.sidebar.selectbox(label='Eliga un paciente:',options=['Paciente 1','Paciente 2','Paciente 3'])
+VENTANEO=st.sidebar.selectbox(label='Seleccione el ventaneo',options=['Cada 3 segundos','Cada 5 segundos','Cada 7 segundos','Cada 9 segundos','Cada 11 segundos'])
 def times(data):
     data['Tiempo']=data.index*3
     data.dropna(inplace=True)
@@ -60,6 +61,7 @@ for df in lista:
 SLIDER = st.sidebar.slider("Seleccione un rango de tiempo:", value=(0.0,min(maxim)))
 st.sidebar.write("Tiempo seleccionado:\n", str(round(SLIDER[1]-SLIDER[0],2))+' '+'min')
 df1,df2,df3,df4=filter(float(SLIDER[0]),float(SLIDER[1]))
+#MULTI_SECTION1=st.sidebar.multiselect(label='Seleccione las sesiones a analizar:',options=['Sesión 1','Sesión 2','Sesión 3','Sesión 4'],default=['Sesión 1','Sesión 2','Sesión 3','Sesión 4'])
 
 import streamlit as st
 

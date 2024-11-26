@@ -9,8 +9,19 @@ import seaborn as sns
 plt.style.use('dark_background')
 #@st.cache
 PATIENT=st.sidebar.selectbox(label='Eliga un paciente:',options=['Paciente 1','Paciente 2','Paciente 3'])
+VENTANEO=st.sidebar.selectbox(label='Seleccione el ventaneo',options=['Cada 3 segundos','Cada 5 segundos','Cada 7 segundos','Cada 9 segundos','Cada 11 segundos'])
+if 'Cada 3 segundos' in VENTANEO:
+    VENTANEO_SELECT=3
+elif 'Cada 5 segundos' in VENTANEO:
+    VENTANEO_SELECT=5
+elif 'Cada 7 segundos' in VENTANEO:
+    VENTANEO_SELECT=7
+elif 'Cada 9 segundos' in VENTANEO:
+    VENTANEO_SELECT=9
+elif 'Cada 11 segundos' in VENTANEO:
+    VENTANEO_SELECT=11
 def times(data):
-    data['Tiempo']=data.index*3
+    data['Tiempo']=data.index*VENTANEO_SELECT
     data.dropna(inplace=True)
     data['Tiempo']=data['Tiempo'].apply(lambda x: datetime.timedelta(seconds=x).total_seconds() / 60)
     return data
@@ -66,8 +77,6 @@ import streamlit as st
 col1, col2 = st.columns(2)
 
 SECTION=st.sidebar.selectbox(label='Grafique en función del tiempo:',options=['Distancia','Velocidad','Aceleración','Presión','Velocidad de la presión','Aceleración de la presión'])
-MULTI_SECTION1=st.sidebar.multiselect(label='Seleccione las sesiones a analizar:',options=['Sesión 1','Sesión 2','Sesión 3','Sesión 4'])
-#MULTI_SECTION2=st.sidebar.multiselect(label='Radar líneas de la cara:',options=['Sesión 1','Sesión 2','Sesión 3','Sesión 4'])
 import matplotlib.pyplot as plt
 # Asumiendo que df1, df2, df3 y df4 son DataFrames ya definidos
 sesiones = [df1, df2, df3, df4]
@@ -196,34 +205,34 @@ with col1:
         labels=["Sesión 1", "Sesión 2", "Sesión 3", "Sesión 4"],
         title="Cruces por Cero - Líneas de la cara"
     )
-    col3, col4 = st.columns(2)
     # Crear un mapa de calor para cada sesión
-    def create_heatmap(df,df2, session_label1,session_label2):
-        fig, axs = plt.subplots(1, 2, figsize=(15, 6))
+    def create_heatmap(df,df2,df3,df4, session_label1,session_label2,session_label3,session_label4):
+        fig, axs = plt.subplots(2, 2, figsize=(15, 15))
         numeric_cols = df.select_dtypes(include=['number']).columns
         correlation_matrix = df[numeric_cols].corr()
         numeric_cols = df2.select_dtypes(include=['number']).columns
         correlation_matrix2 = df2[numeric_cols].corr()
-
+        numeric_cols = df3.select_dtypes(include=['number']).columns
+        correlation_matrix3 = df3[numeric_cols].corr()
+        numeric_cols = df4.select_dtypes(include=['number']).columns
+        correlation_matrix4 = df4[numeric_cols].corr()
         # Mapa de calor para el primer DataFrame 
-        sns.heatmap(correlation_matrix, ax=axs[0], cmap='viridis', cbar=False) 
-        axs[0].set_title(session_label1) 
+        sns.heatmap(correlation_matrix, ax=axs[0,0], cmap='viridis', cbar=True) 
+        axs[0,0].set_title(session_label1) 
         # Mapa de calor para el segundo DataFrame 
-        sns.heatmap(correlation_matrix2, ax=axs[1], cmap='viridis', cbar=True) 
-        axs[1].set_title(session_label2)
+        sns.heatmap(correlation_matrix2, ax=axs[0,1], cmap='viridis', cbar=True) 
+        axs[0,1].set_title(session_label2)
+
+        sns.heatmap(correlation_matrix3, ax=axs[1,0], cmap='viridis', cbar=True) 
+        axs[1,0].set_title(session_label3)
+
+        sns.heatmap(correlation_matrix4, ax=axs[1,1], cmap='viridis', cbar=True) 
+        axs[1,1].set_title(session_label4)
         return fig
 
     # Crear los gráficos
-    heatmap1 = create_heatmap(df1,df2, "Sesión 1",'Sesión 2')
-    heatmap2 = create_heatmap(df3,df4 ,"Sesión 3",'Sesión 4')
+    heatmap1 = create_heatmap(df1,df2,df3,df4, "Sesión 1",'Sesión 2','Sesión 3','Sesión 4')
     
-    with col3:
-        st.pyplot(combined_radar_chart1)
-        st.pyplot(heatmap1)
-
-    with col4:
-        st.pyplot(combined_radar_chart2)
-        st.pyplot(heatmap2)
 
 with col2:
     if 'Distancia' in SECTION:
@@ -314,4 +323,5 @@ with col2:
 
     # Ajustar el diseño
     #plt.tight_layout()
-    st.pyplot(fig3)
+    st.pyplot(heatmap1)
+    #st.pyplot(fig3)
