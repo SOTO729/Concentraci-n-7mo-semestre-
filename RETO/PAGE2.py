@@ -5,7 +5,17 @@ from datetime import time
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
-import seaborn as sns
+
+st.markdown("""  
+<style>  
+.stMainBlockContainer{
+    background-color: #000000;
+}
+.stAppHeader{
+    background-color: #000000;
+}
+</style>  
+""", unsafe_allow_html=True)
 plt.style.use('dark_background')
 #@st.cache
 
@@ -108,7 +118,7 @@ def pir(dfg):
     df_paired = pd.concat([df_paired], ignore_index=True)
 
     # Crear la gráfica de pirámide
-    fig, ax = plt.subplots(figsize=(19, 17))
+    fig, ax = plt.subplots(figsize=(6, 4))
 
     # Posiciones en el eje y (una posición por cada par de columnas más la fila de sumatorias)
     y_positions = range(len(df_paired))
@@ -136,7 +146,7 @@ def pir(dfg):
     ax.axvline(0, color='black', linewidth=0.8)
 
     # Ajustar diseño y mostrar la gráfica
-    plt.tight_layout()
+    #plt.tight_layout()
     return fig
 col9,col10=st.columns(2)
 with col9:
@@ -148,4 +158,78 @@ with col9:
         st.pyplot(pir(df2))
         st.pyplot(pir(df4))
 with col10:
+    fig6, axs6 = plt.subplots(nrows=3, ncols=1, figsize=(10, 11))
+    # Crear el gráfico de áreas
+    
+    def eyes(df):
+        scaler = StandardScaler()
+        df=df[['F5EEX','F6EES','F7EIS','F8EIX','F9EEX','F10ES','F11EX','F12ES','F13EV','F14EV']]
+        df_normalized = pd.DataFrame(scaler.fit_transform(df))
+        df_normalized['suma']=df_normalized.sum(axis=1)
+        df_normalized['suma']=df_normalized['suma'].cumsum()
+        return df_normalized['suma']
+    def mouth(df):
+        scaler = StandardScaler()
+        df=df[['F15MS','F16MX','F17MS','F18MX','F19MH','F20MH']]
+        df_normalized = pd.DataFrame(scaler.fit_transform(df))
+        df_normalized['suma']=df_normalized.sum(axis=1)
+        df_normalized['suma']=df_normalized['suma'].cumsum()
+        return df_normalized['suma']
+    def eyebrows(df):
+        scaler = StandardScaler()
+        df=df[['F1EBX','F2EBS','F3EBS','F4EBX']]
+        df_normalized = pd.DataFrame(scaler.fit_transform(df))
+        df_normalized['suma']=df_normalized.sum(axis=1)
+        df_normalized['suma']=df_normalized['suma'].cumsum()
+        return df_normalized['suma']
+    
+    axs6[0].fill_between(df1['Tiempo'], eyes(df1), color=plt.get_cmap("Set3_r")(1), alpha=0.5, label='Sesión 1')
+    axs6[0].fill_between(df2['Tiempo'],eyes(df2), color=plt.get_cmap("Set3_r")(3), alpha=0.5, label='Sesión 2')
+    axs6[0].fill_between(df3['Tiempo'], eyes(df3), color=plt.get_cmap("Set3_r")(4), alpha=0.5, label='Sesión 3')
+    axs6[0].fill_between(df4['Tiempo'], eyes(df4), color=plt.get_cmap("Set3_r")(7), alpha=0.5, label='Sesión 4')
+    axs6[0].plot(df1['Tiempo'], eyes(df1), color=plt.get_cmap("Set3_r")(1), alpha=0.5)
+    axs6[0].plot(df2['Tiempo'],eyes(df2), color=plt.get_cmap("Set3_r")(3), alpha=0.5)
+    axs6[0].plot(df3['Tiempo'], eyes(df3), color=plt.get_cmap("Set3_r")(4), alpha=0.5)
+    axs6[0].plot(df4['Tiempo'], eyes(df4), color=plt.get_cmap("Set3_r")(7), alpha=0.5)
+    #axs6[0].set_xlabel('Tiempo')
+    axs6[0].set_ylabel('Sumatoria de Ojos')
+    axs6[0].set_title('Ojos bajo una estandarización')
+    axs6[0].legend()
+
+
+    axs6[1].fill_between(df1['Tiempo'], mouth(df1), color=plt.get_cmap("Set3_r")(1), alpha=0.5, label='Sesión 1')
+    axs6[1].fill_between(df2['Tiempo'], mouth(df2), color=plt.get_cmap("Set3_r")(3), alpha=0.5, label='Sesión 2')
+    axs6[1].fill_between(df3['Tiempo'], mouth(df3), color=plt.get_cmap("Set3_r")(4), alpha=0.5, label='Sesión 3')
+    axs6[1].fill_between(df4['Tiempo'], mouth(df4), color=plt.get_cmap("Set3_r")(7), alpha=0.5, label='Sesión 4')
+
+    axs6[1].plot(df1['Tiempo'], mouth(df1), color=plt.get_cmap("Set3_r")(1), alpha=0.5)
+    axs6[1].plot(df2['Tiempo'], mouth(df2), color=plt.get_cmap("Set3_r")(3), alpha=0.5)
+    axs6[1].plot(df3['Tiempo'], mouth(df3), color=plt.get_cmap("Set3_r")(4), alpha=0.5)
+    axs6[1].plot(df4['Tiempo'], mouth(df4), color=plt.get_cmap("Set3_r")(7), alpha=0.5)
+    #axs6[1].set_xlabel('Tiempo')
+    axs6[1].set_ylabel('Sumatoria de Boca')
+    axs6[1].set_title('Boca bajo una estandarización')
+    axs6[1].legend()
+
+    axs6[2].fill_between(df1['Tiempo'], eyebrows(df1), color=plt.get_cmap("Set3_r")(1), alpha=0.5, label='Sesión 1')
+    axs6[2].fill_between(df2['Tiempo'], eyebrows(df2), color=plt.get_cmap("Set3_r")(3), alpha=0.5, label='Sesión 2')
+    axs6[2].fill_between(df3['Tiempo'], eyebrows(df3), color=plt.get_cmap("Set3_r")(4), alpha=0.5, label='Sesión 3')
+    axs6[2].fill_between(df4['Tiempo'], eyebrows(df4), color=plt.get_cmap("Set3_r")(7), alpha=0.5, label='Sesión 4')
+
+    axs6[2].plot(df1['Tiempo'], eyebrows(df1), color=plt.get_cmap("Set3_r")(1), alpha=0.5)
+    axs6[2].plot(df2['Tiempo'], eyebrows(df2), color=plt.get_cmap("Set3_r")(3), alpha=0.5)
+    axs6[2].plot(df3['Tiempo'], eyebrows(df3), color=plt.get_cmap("Set3_r")(4), alpha=0.5)
+    axs6[2].plot(df4['Tiempo'], eyebrows(df4), color=plt.get_cmap("Set3_r")(7), alpha=0.5)
+    axs6[2].set_xlabel('Tiempo (min)')
+    axs6[2].set_ylabel('Sumatoria de Cejas')
+    axs6[2].set_title('Cejas bajo una estandarización')
+    axs6[2].legend()
+    #plt.tight_layout()
+    # Etiquetas y título
+    #axs6[0,0].xlabel('Tiempo de la sesión (min)')
+    #axs6[0,0].ylabel('Ojos')
+    #fig6.title('Movimiento de los ojos en el tiempo')
+    #axs6[0,0].legend(loc='upper left')
+    #plt.tight_layout()
+    st.pyplot(fig6)
     st.sidebar.empty()
