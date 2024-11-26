@@ -6,6 +6,17 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
 import seaborn as sns
+st.markdown("""  
+<style>  
+.stMainBlockContainer{
+    background-color: #000000;
+}
+.stAppHeader{
+    background-color: #000000;
+}
+</style>  
+""", unsafe_allow_html=True)  
+
 plt.style.use('dark_background')
 #@st.cache
 PATIENT=st.sidebar.selectbox(label='Eliga un paciente:',options=['Paciente 1','Paciente 2','Paciente 3'])
@@ -114,8 +125,7 @@ for s, ax in enumerate(axs.flatten()):
 
         # Dibujar barras horizontales para los intervalos
         for (start, end) in intervalos:
-            ax.hlines(y=i, xmin=start, xmax=end, color=plt.get_cmap("Set1")(i), linewidth=6)
-
+            ax.hlines(y=i, xmin=start, xmax=end, color=plt.get_cmap("Set3_r")(i), linewidth=6)
     # Etiquetas y formato
     ax.set_yticks(range(len(sentiment_columns)))
     ax.set_yticklabels(sentiment_columns)
@@ -162,11 +172,13 @@ with col1:
         angles += angles[:1]  # Cerrar el radar
 
         # Dibujar cada serie de datos en el radar
+        i=0
         for session_data, label in zip(radar_data, labels):
             values = session_data['Zero_Crossings'].tolist()
             values += values[:1]  # Cerrar el gráfico
-            ax.plot(angles, values, linewidth=2, linestyle='solid', label=label)
-            ax.fill(angles, values, alpha=0.25)
+            ax.plot(angles, values, linewidth=2, linestyle='solid', label=label,color=plt.get_cmap("Set3_r")(i+1))
+            ax.fill(angles, values, alpha=0.25,color=plt.get_cmap("Set3_r")(i+1))
+            i+=1
 
         ax.set_xticks(angles[:-1])
         ax.set_xticklabels(categories, fontsize=10)
@@ -207,7 +219,7 @@ with col1:
     )
     # Crear un mapa de calor para cada sesión
     def create_heatmap(df,df2,df3,df4, session_label1,session_label2,session_label3,session_label4):
-        fig, axs = plt.subplots(2, 2, figsize=(15, 15))
+        fig, axs = plt.subplots(2, 2, figsize=(14, 11.5))
         numeric_cols = df.select_dtypes(include=['number']).columns
         correlation_matrix = df[numeric_cols].corr()
         numeric_cols = df2.select_dtypes(include=['number']).columns
@@ -216,59 +228,23 @@ with col1:
         correlation_matrix3 = df3[numeric_cols].corr()
         numeric_cols = df4.select_dtypes(include=['number']).columns
         correlation_matrix4 = df4[numeric_cols].corr()
-        # Mapa de calor para el primer DataFrame 
-        sns.heatmap(correlation_matrix, ax=axs[0,0], cmap='viridis', cbar=True) 
+        # Mapa de calor para el primer DataFrame ,color=plt.get_cmap("Set3_r")(i+1)
+        sns.heatmap(correlation_matrix, ax=axs[0,0], cmap='YlGnBu', cbar=True) 
         axs[0,0].set_title(session_label1) 
         # Mapa de calor para el segundo DataFrame 
-        sns.heatmap(correlation_matrix2, ax=axs[0,1], cmap='viridis', cbar=True) 
+        sns.heatmap(correlation_matrix2, ax=axs[0,1], cmap='YlGnBu', cbar=True) 
         axs[0,1].set_title(session_label2)
 
-        sns.heatmap(correlation_matrix3, ax=axs[1,0], cmap='viridis', cbar=True) 
+        sns.heatmap(correlation_matrix3, ax=axs[1,0], cmap='YlGnBu', cbar=True) 
         axs[1,0].set_title(session_label3)
 
-        sns.heatmap(correlation_matrix4, ax=axs[1,1], cmap='viridis', cbar=True) 
+        sns.heatmap(correlation_matrix4, ax=axs[1,1], cmap='YlGnBu', cbar=True) 
         axs[1,1].set_title(session_label4)
+        #plt.tight_layout()
         return fig
 
     # Crear los gráficos
     heatmap1 = create_heatmap(df1,df2,df3,df4, "Sesión 1",'Sesión 2','Sesión 3','Sesión 4')
-    
-
-with col2:
-    if 'Distancia' in SECTION:
-        var='Distancia'
-        var2='Distancia'
-    if 'Velocidad' in SECTION:
-        var='Velocidad'
-        var2='Veloc'
-    if 'Aceleración' in SECTION:
-        var='Aceleración'
-        var2='Acele'
-    if 'Presión' in SECTION:
-        var='Presión'
-        var2='Presn'
-    if 'Velocidad de la presión' in SECTION:
-        var='Velocidad de la presión'
-        var2='VelPr'
-    if 'Aceleración de la presión' in SECTION:
-        var='Aceleración de la presión'
-        var2='AcePr'
-    fig2, axs2 = plt.subplots(nrows=1, ncols=1, figsize=(10, 6.23))
-    # Crear el gráfico de áreas
-    plt.fill_between(df1['Tiempo'], df1[var2].cumsum(), color='green', alpha=0.5, label='Sesión 1')
-    plt.fill_between(df2['Tiempo'], df2[var2].cumsum(), color='lightblue', alpha=0.5, label='Sesión 2')
-    plt.fill_between(df3['Tiempo'], df3[var2].cumsum(), color='blue', alpha=0.5, label='Sesión 3')
-    plt.fill_between(df4['Tiempo'], df4[var2].cumsum(), color='purple', alpha=0.5, label='Sesión 4')
-
-    # Etiquetas y título
-    plt.xlabel('Tiempo de la sesión (min)')
-    plt.ylabel(f'{var}')
-    plt.title(f'{var} acumulada en el tiempo')
-    plt.legend(loc='upper left')
-    #plt.tight_layout()
-    st.pyplot(fig2)
-    import matplotlib.pyplot as plt
-
     # Datos para cada sección
     s1c=data_mini[(data_mini['emocion']=='Cansancio') & (data_mini['sesion']==1)]
     s1a=data_mini[(data_mini['emocion']=='Ansiedad') & (data_mini['sesion']==1)]
@@ -299,29 +275,71 @@ with col2:
     labels = ['Cansancio', 'Ansiedad', 'Dolor', 'Motivación']
 
     # Crear subplots
-    fig3, axs3 = plt.subplots(2, 2, figsize=(10, 8))
+    fig3, axs3 = plt.subplots(1, 4, figsize=(18, 5))
 
     # Gráfico para la sección 1
-    axs3[0, 0].bar(labels, seccion1, color='green')
-    axs3[0, 0].set_title('Tiempo máximo en una emoción Sesión 1')
-    axs3[0, 0].set_ylabel('Tiempo')
+    axs3[0].bar(labels, seccion1, color=plt.get_cmap("Set3_r")(1))
+    axs3[0].set_title('Sesión 1')
+    axs3[0].set_ylabel('Tiempo Máximo')
 
     # Gráfico para la sección 2
-    axs3[0, 1].bar(labels, seccion2, color='lightblue')
-    axs3[0, 1].set_title('Tiempo máximo en una emoción Sesión 2')
-    axs3[0, 1].set_ylabel('Tiempo')
+    axs3[1].bar(labels, seccion2, color=plt.get_cmap("Set3_r")(3))
+    axs3[1].set_title('Sesión 2')
+    axs3[1].set_ylabel('Tiempo Máximo')
 
     # Gráfico para la sección 3
-    axs3[1, 0].bar(labels, seccion3, color='blue')
-    axs3[1, 0].set_title('Tiempo máximo en una emoción Sesión 3')
-    axs3[1, 0].set_ylabel('Tiempo')
+    axs3[2].bar(labels, seccion3, color=plt.get_cmap("Set3_r")(4))
+    axs3[2].set_title('Sesión 3')
+    axs3[2].set_ylabel('Tiempo Máximo')
 
     # Gráfico para la sección 4
-    axs3[1, 1].bar(labels, seccion4, color='purple')
-    axs3[1, 1].set_title('Tiempo máximo en una emoción Sesión 4')
-    axs3[1, 1].set_ylabel('Tiempo')
+    axs3[3].bar(labels, seccion4, color=plt.get_cmap("Set3_r")(7))
+    axs3[3].set_title('Sesión 4')
+    axs3[3].set_ylabel('Tiempo Máximo')
+    col3,col4=st.columns(2)
+    with col3:
+        st.pyplot(combined_radar_chart1)
+    with col4:
+        st.pyplot(combined_radar_chart2)
+    st.pyplot(fig3)
+with col2:
+    if 'Distancia' in SECTION:
+        var='Distancia'
+        var2='Distancia'
+    if 'Velocidad' in SECTION:
+        var='Velocidad'
+        var2='Veloc'
+    if 'Aceleración' in SECTION:
+        var='Aceleración'
+        var2='Acele'
+    if 'Presión' in SECTION:
+        var='Presión'
+        var2='Presn'
+    if 'Velocidad de la presión' in SECTION:
+        var='Velocidad de la presión'
+        var2='VelPr'
+    if 'Aceleración de la presión' in SECTION:
+        var='Aceleración de la presión'
+        var2='AcePr'
+    fig2, axs2 = plt.subplots(nrows=1, ncols=1, figsize=(6, 3.23))
+    # Crear el gráfico de áreas
+    plt.fill_between(df1['Tiempo'], df1[var2].cumsum(), color=plt.get_cmap("Set3_r")(1), alpha=0.5, label='Sesión 1')
+    plt.fill_between(df2['Tiempo'], df2[var2].cumsum(), color=plt.get_cmap("Set3_r")(3), alpha=0.5, label='Sesión 2')
+    plt.fill_between(df3['Tiempo'], df3[var2].cumsum(), color=plt.get_cmap("Set3_r")(4), alpha=0.5, label='Sesión 3')
+    plt.fill_between(df4['Tiempo'], df4[var2].cumsum(), color=plt.get_cmap("Set3_r")(7), alpha=0.5, label='Sesión 4')
+
+    # Etiquetas y título
+    plt.xlabel('Tiempo de la sesión (min)')
+    plt.ylabel(f'{var}')
+    plt.title(f'{var} acumulada en el tiempo')
+    plt.legend(loc='upper left')
+    #plt.tight_layout()
+    st.pyplot(fig2)
+    import matplotlib.pyplot as plt
+
+    
 
     # Ajustar el diseño
     #plt.tight_layout()
     st.pyplot(heatmap1)
-    #st.pyplot(fig3)
+    

@@ -2,7 +2,7 @@
 showErrorDetails=false
 [theme]
 base = "dark"
-primaryColor = "#048b2e"
+primaryColor = "#b9edd9"
 secondaryBackgroundColor = "#1e272e"
 textColor = "#eeeeee"
 #font = "monospace"

@@ -8,6 +8,7 @@ from sklearn.preprocessing import StandardScaler
 import seaborn as sns
 plt.style.use('dark_background')
 #@st.cache
+
 PATIENT=st.sidebar.selectbox(label='Eliga un paciente:',options=['Paciente 1','Paciente 2','Paciente 3'])
 VENTANEO=st.sidebar.selectbox(label='Seleccione el ventaneo',options=['Cada 3 segundos','Cada 5 segundos','Cada 7 segundos','Cada 9 segundos','Cada 11 segundos'])
 def times(data):
@@ -113,8 +114,8 @@ def pir(dfg):
     y_positions = range(len(df_paired))
 
     # Dibujar las barras horizontales para cada par de columnas y la sumatoria
-    ax.barh(y_positions, df_paired['Derecho'], color='purple', label='Derecho', align='center')
-    ax.barh(y_positions, -df_paired['Izquierdo'], color='green', label='Izquierdo', align='center')  # Negativo para enfrentar
+    ax.barh(y_positions, df_paired['Derecho'], color=plt.get_cmap("Set3_r")(1), label='Derecho', align='center')
+    ax.barh(y_positions, -df_paired['Izquierdo'], color=plt.get_cmap("Set3_r")(3), label='Izquierdo', align='center')  # Negativo para enfrentar
 
     # Configuración del eje y con etiquetas a ambos lados
     ax.set_yticks(y_positions)
