@@ -78,7 +78,7 @@ import streamlit as st
 
 col1, col2 = st.columns(2)
 
-def pir(dfg):
+def pir(dfg,param):
     # Filtros para derecho e izquierdo
     derecho = dfg[['F1EBX', 'F4EBX', 'F5EEX', 'F8EIX', 'F14EV', 'F9EEX', 'F11EX', 'F15MS', 'F19MH', 'F17MS']]
     izquierdo = dfg[['F2EBS', 'F3EBS', 'F6EES', 'F7EIS', 'F13EV', 'F12ES', 'F10ES', 'F16MX', 'F20MH', 'F18MX']]
@@ -106,16 +106,16 @@ def pir(dfg):
         'Derecho': cross_zero_counts_derecho,
         'Izquierdo': cross_zero_counts_izquierdo
     })
-
-    # Agregar una fila para las sumatorias totales utilizando pd.concat()
-    sumatoria_derecho = sum(df_paired['Derecho'])
-    sumatoria_izquierdo = sum(df_paired['Izquierdo'])
-    df_sumatoria = pd.DataFrame({
-        'Columnas_Derecho': ['Sumatoria Total'],
-        'Columnas_Izquierdo': ['Sumatoria Total'],
-        'Derecho': [sumatoria_derecho],
-        'Izquierdo': [sumatoria_izquierdo]
-    })
+    if param==True:
+        # Agregar una fila para las sumatorias totales utilizando pd.concat()
+        sumatoria_derecho = sum(df_paired['Derecho'])
+        sumatoria_izquierdo = sum(df_paired['Izquierdo'])
+        df_sumatoria = pd.DataFrame({
+            'Columnas_Derecho': ['Sumatoria Total'],
+            'Columnas_Izquierdo': ['Sumatoria Total'],
+            'Derecho': [sumatoria_derecho],
+            'Izquierdo': [sumatoria_izquierdo]
+        })
     df_paired = pd.concat([df_paired], ignore_index=True)
 
     # Crear la gráfica de pirámide
@@ -126,7 +126,9 @@ def pir(dfg):
 
     # Dibujar las barras horizontales para cada par de columnas y la sumatoria
     ax.barh(y_positions, df_paired['Derecho'], color=plt.get_cmap("Set3_r")(1), label='Derecho', align='center')
-    ax.barh(y_positions, -df_paired['Izquierdo'], color=plt.get_cmap("Set3_r")(3), label='Izquierdo', align='center')  # Negativo para enfrentar
+    ax.barh(y_positions, -df_paired['Izquierdo'], color=plt.get_cmap("Set3_r")(3), label='Izquierdo', align='center')
+    
+      # Negativo para enfrentar
 
     # Configuración del eje y con etiquetas a ambos lados
     ax.set_yticks(y_positions)
@@ -148,7 +150,11 @@ def pir(dfg):
 
     # Ajustar diseño y mostrar la gráfica
     #plt.tight_layout()
-    return fig
+    if param==True:
+        return df_sumatoria
+    else:
+        return fig
+
 col9,col10=st.columns(2)
 with col9:
     col20,col21=st.columns(2)
@@ -160,13 +166,31 @@ with col9:
             )
     col11,col12=st.columns(2)
     with col21:
-        st.write('grafico de distancia total recorrida')
+        categories = ['Sesión 1', 'Sesión 2', 'Sesión 3', 'Sesión 4']
+        s1,s2,s3,s4=pir(df1,True),pir(df2,True),pir(df3,True),pir(df4,True)
+        values1 = [s1['Derecho'][0], s2['Derecho'][0], s3['Derecho'][0], s4['Derecho'][0]]
+        values2 = [s1['Izquierdo'][0], s2['Izquierdo'][0], s3['Izquierdo'][0], s4['Izquierdo'][0]]
+
+        x = np.arange(len(categories))  # the label locations
+        width = 0.25  # the width of the bars
+
+        fig, ax = plt.subplots(figsize=(5,4.3))
+        rects1 = ax.bar(x - width/2, values1, width, label='Derecho',color=plt.get_cmap("Set3_r")(1))
+        rects2 = ax.bar(x + width/2, values2, width, label='Izquierdo',color=plt.get_cmap("Set3_r")(3))
+
+        # Add some text for labels, title and custom x-axis tick labels, etc.
+        ax.set_title('Total de cruces en 0')
+        ax.set_xticks(x)
+        ax.set_xticklabels(categories)
+        ax.legend()
+        st.pyplot(fig)
+    mplt1,mplt2,mplt3,mplt4=pir(df1,False),pir(df2,False),pir(df3,False),pir(df4,False)
     with col11:
-        st.pyplot(pir(df1))
-        st.pyplot(pir(df3))
+        st.pyplot(mplt1)
+        st.pyplot(mplt2)
     with col12:
-        st.pyplot(pir(df2))
-        st.pyplot(pir(df4))
+        st.pyplot(mplt3)
+        st.pyplot(mplt4)
 with col10:
     fig6, axs6 = plt.subplots(nrows=3, ncols=1, figsize=(10, 12))
     # Crear el gráfico de áreas
@@ -234,12 +258,5 @@ with col10:
     axs6[2].set_ylabel('Sumatoria de Cejas')
     axs6[2].set_title('Cejas bajo una estandarización')
     axs6[2].legend()
-    #plt.tight_layout()
-    # Etiquetas y título
-    #axs6[0,0].xlabel('Tiempo de la sesión (min)')
-    #axs6[0,0].ylabel('Ojos')
-    #fig6.title('Movimiento de los ojos en el tiempo')
-    #axs6[0,0].legend(loc='upper left')
-    #plt.tight_layout()
     st.pyplot(fig6)
     st.sidebar.empty()

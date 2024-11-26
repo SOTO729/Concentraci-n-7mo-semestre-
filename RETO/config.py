@@ -19,7 +19,7 @@ def load_df(data):
 folder_paths = ['./Paciente 1','./Paciente 2','./Paciente 3']
 # Define la ruta de la carpeta
 folder_path = './Paciente 1'
-
+@st.cache_data
 def read_patient(folder_path):
     # List the files in the folder
     files = os.listdir(folder_path)
