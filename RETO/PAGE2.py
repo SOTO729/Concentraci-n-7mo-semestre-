@@ -77,6 +77,7 @@ df1,df2,df3,df4=filter(float(SLIDER[0]),float(SLIDER[1]))
 import streamlit as st
 
 col1, col2 = st.columns(2)
+
 def pir(dfg):
     # Filtros para derecho e izquierdo
     derecho = dfg[['F1EBX', 'F4EBX', 'F5EEX', 'F8EIX', 'F14EV', 'F9EEX', 'F11EX', 'F15MS', 'F19MH', 'F17MS']]
@@ -150,7 +151,16 @@ def pir(dfg):
     return fig
 col9,col10=st.columns(2)
 with col9:
+    col20,col21=st.columns(2)
+    with col20:
+        st.image(
+            image="./Images/cara5.PNG",
+            use_container_width=True,
+            caption="Diagrama de las líneas de la cara"
+            )
     col11,col12=st.columns(2)
+    with col21:
+        st.write('grafico de distancia total recorrida')
     with col11:
         st.pyplot(pir(df1))
         st.pyplot(pir(df3))
@@ -158,7 +168,7 @@ with col9:
         st.pyplot(pir(df2))
         st.pyplot(pir(df4))
 with col10:
-    fig6, axs6 = plt.subplots(nrows=3, ncols=1, figsize=(10, 11))
+    fig6, axs6 = plt.subplots(nrows=3, ncols=1, figsize=(10, 12))
     # Crear el gráfico de áreas
     
     def eyes(df):
