@@ -125,8 +125,8 @@ def pir(dfg,param):
     y_positions = range(len(df_paired))
 
     # Dibujar las barras horizontales para cada par de columnas y la sumatoria
-    ax.barh(y_positions, df_paired['Derecho'], color=plt.get_cmap("Set3_r")(1), label='Derecho', align='center')
-    ax.barh(y_positions, -df_paired['Izquierdo'], color=plt.get_cmap("Set3_r")(3), label='Izquierdo', align='center')
+    ax.barh(y_positions, df_paired['Derecho'], color=plt.get_cmap("Set3_r")(3), label='Derecho', align='center')
+    ax.barh(y_positions, -df_paired['Izquierdo'], color=plt.get_cmap("Set3_r")(1), label='Izquierdo', align='center')
     
       # Negativo para enfrentar
 
