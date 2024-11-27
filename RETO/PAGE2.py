@@ -175,8 +175,8 @@ with col9:
         width = 0.25  # the width of the bars
 
         fig, ax = plt.subplots(figsize=(5,4.3))
-        rects1 = ax.bar(x - width/2, values1, width, label='Derecho',color=plt.get_cmap("Set3_r")(1))
-        rects2 = ax.bar(x + width/2, values2, width, label='Izquierdo',color=plt.get_cmap("Set3_r")(3))
+        rects1 = ax.bar(x - width/2, values1, width, label='Derecho',color=plt.get_cmap("Set3_r")(3))
+        rects2 = ax.bar(x + width/2, values2, width, label='Izquierdo',color=plt.get_cmap("Set3_r")(1))
 
         # Add some text for labels, title and custom x-axis tick labels, etc.
         ax.set_title('Total de cruces en 0')
