@@ -27,7 +27,7 @@ def times(data):
     data['Tiempo']=data['Tiempo'].apply(lambda x: datetime.timedelta(seconds=x).total_seconds() / 60)
     return data
 def filter(minn,maxx):
-    if 'Paciente 1' in PATIENT:
+    if 'Paciente 7' in PATIENT:
         from config import df1p1
         from config import df2p1
         from config import df3p1
@@ -36,7 +36,7 @@ def filter(minn,maxx):
         df2 = times(df2p1)
         df3 = times(df3p1)
         df4 = times(df4p1)
-    elif 'Paciente 2' in PATIENT:
+    elif 'Paciente 8' in PATIENT:
         from config import df1p2
         from config import df2p2
         from config import df3p2
@@ -45,7 +45,7 @@ def filter(minn,maxx):
         df2 = times(df2p2)
         df3 = times(df3p2)
         df4 = times(df4p2)
-    elif 'Paciente 3' in PATIENT:
+    elif 'Paciente 11' in PATIENT:
         from config import df1p3
         from config import df2p3
         from config import df3p3
