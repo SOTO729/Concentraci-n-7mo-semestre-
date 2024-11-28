@@ -19,7 +19,7 @@ st.markdown("""
 plt.style.use('dark_background')
 #@st.cache
 
-PATIENT=st.sidebar.selectbox(label='Eliga un paciente:',options=['Paciente 1','Paciente 2','Paciente 3'])
+PATIENT=st.sidebar.selectbox(label='Eliga un paciente:',options=['Paciente 7','Paciente 8','Paciente 11'])
 VENTANEO=st.sidebar.selectbox(label='Seleccione el ventaneo',options=['Cada 3 segundos','Cada 5 segundos','Cada 7 segundos','Cada 9 segundos','Cada 11 segundos'])
 def times(data):
     data['Tiempo']=data.index*3
