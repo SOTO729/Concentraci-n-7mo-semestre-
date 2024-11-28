@@ -219,14 +219,23 @@ with col1:
     )
     # Crear un mapa de calor para cada sesión
     def create_heatmap(df,df2,df3,df4, session_label1,session_label2,session_label3,session_label4):
+        #df=df.drop(columns=['Tiempo','F5EEX','F6EES','F8EIX','F7EIS','F9EEX','F10ES','F11EX','F12ES','F13EV','F14EV','F17MS','F18MX','F15MS','F16MX','F19MH','F20MH','F1EBX','F2EBS','F4EBX','F3EBS'])
+        #df2=df2.drop(columns=['Tiempo','F5EEX','F6EES','F8EIX','F7EIS','F9EEX','F10ES','F11EX','F12ES','F13EV','F14EV','F17MS','F18MX','F15MS','F16MX','F19MH','F20MH','F1EBX','F2EBS','F4EBX','F3EBS'])
+        #df3=df3.drop(columns=['Tiempo','F5EEX','F6EES','F8EIX','F7EIS','F9EEX','F10ES','F11EX','F12ES','F13EV','F14EV','F17MS','F18MX','F15MS','F16MX','F19MH','F20MH','F1EBX','F2EBS','F4EBX','F3EBS'])
+        #df4=df4.drop(columns=['Tiempo','F5EEX','F6EES','F8EIX','F7EIS','F9EEX','F10ES','F11EX','F12ES','F13EV','F14EV','F17MS','F18MX','F15MS','F16MX','F19MH','F20MH','F1EBX','F2EBS','F4EBX','F3EBS'])
+        df=df.drop(columns=['Tiempo','Des_x','Des_y','Des_z'])
+        df2=df2.drop(columns=['Tiempo','Des_x','Des_y','Des_z'])
+        df3=df3.drop(columns=['Tiempo','Des_x','Des_y','Des_z'])
+        df4=df4.drop(columns=['Tiempo','Des_x','Des_y','Des_z'])
+        
         fig, axs = plt.subplots(2, 2, figsize=(14, 11.5))
-        numeric_cols = df.select_dtypes(include=['number']).columns
+        numeric_cols = df.columns
         correlation_matrix = df[numeric_cols].corr()
-        numeric_cols = df2.select_dtypes(include=['number']).columns
+        numeric_cols = df2.columns
         correlation_matrix2 = df2[numeric_cols].corr()
-        numeric_cols = df3.select_dtypes(include=['number']).columns
+        numeric_cols = df3.columns
         correlation_matrix3 = df3[numeric_cols].corr()
-        numeric_cols = df4.select_dtypes(include=['number']).columns
+        numeric_cols = df4.columns
         correlation_matrix4 = df4[numeric_cols].corr()
         # Mapa de calor para el primer DataFrame ,color=plt.get_cmap("Set3_r")(i+1)
         sns.heatmap(correlation_matrix, ax=axs[0,0], cmap='YlGnBu', cbar=True) 
@@ -241,6 +250,8 @@ with col1:
         sns.heatmap(correlation_matrix4, ax=axs[1,1], cmap='YlGnBu', cbar=True) 
         axs[1,1].set_title(session_label4)
         #plt.tight_layout()
+        plt.xticks(rotation=90) 
+        plt.yticks(rotation=0)
         return fig
 
     # Crear los gráficos
