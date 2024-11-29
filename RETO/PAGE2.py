@@ -192,7 +192,7 @@ with col9:
         st.pyplot(mplt3)
         st.pyplot(mplt4)
 with col10:
-    fig6, axs6 = plt.subplots(nrows=3, ncols=1, figsize=(10, 12))
+    fig6, axs6 = plt.subplots(nrows=3, ncols=1, figsize=(10, 12.5))
     # Crear el gráfico de áreas
     
     def eyes(df):
