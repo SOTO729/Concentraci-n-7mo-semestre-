@@ -43,3 +43,4 @@ print('Porcentaje de buenas:',buenas)
 print()
 print('Porcentaje de malas:',malas)
 
+oeoe=2
